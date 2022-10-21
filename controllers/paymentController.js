@@ -1,13 +1,13 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-module.exports = (req, res) => {
+module.exports = async (req, res) => {
     const { price, token } = req.body;
-
-    return stripe.customers
-      .create({
+console.log(token.email);
+    return stripe.customers.create({
         email: token.email,
         source: token.id
       })
+      
       .then(customer => {
         stripe.charges.create(
           {
@@ -23,4 +23,12 @@ module.exports = (req, res) => {
         res.status(200).json(result)
       })
       .catch(err => console.log(err));
+      // let stripe1 = await stripe.customers.create({
+      //   description:'sometestemail@email.com'
+      // },function(err,customer) {
+      //   console.log('error',err);
+      //   console.log('customer',customer);
+      // }).catch(err=> console.log('err catch',err))
+
+      // console.log(stripe1);
 }
